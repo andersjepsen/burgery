@@ -56,7 +56,11 @@ export function Layout({ children, fullscreen = false }: LayoutProps) {
         </Toolbar>
       </AppBar>
       <Toolbar />
-      <Container maxWidth={maxWidth} disableGutters={fullscreen}>
+      <Container
+        maxWidth={maxWidth}
+        disableGutters={fullscreen}
+        sx={!fullscreen ? { mt: 2 } : undefined}
+      >
         {children}
       </Container>
     </div>
