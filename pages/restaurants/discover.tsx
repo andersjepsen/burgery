@@ -42,7 +42,6 @@ const DiscoverPage: NextPage = () => {
           sx={{
             width: "33%",
             px: 1,
-
             overflowY: "scroll",
             position: "absolute",
             right: 0,

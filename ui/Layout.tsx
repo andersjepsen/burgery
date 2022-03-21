@@ -1,9 +1,19 @@
-import React from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  ContainerTypeMap,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Box, Button, Container, ContainerTypeMap, Grid } from "@mui/material";
 import { useRouter } from "next/router";
+import React from "react";
 
 const pages = [
   { title: "My Restaurants", link: "/restaurants" },
@@ -17,7 +27,18 @@ interface LayoutProps {
 export function Layout({ children, maxWidth = "lg" }: LayoutProps) {
   const router = useRouter();
 
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
   const fullscreen = React.useMemo(() => maxWidth === undefined, [maxWidth]);
+
+  const open = Boolean(anchorEl);
+
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   const handleClick = (link: string) => {
     router.push(link);
@@ -43,13 +64,19 @@ export function Layout({ children, maxWidth = "lg" }: LayoutProps) {
             ))}
           </Box>
 
-          <Button
-            variant="text"
-            onClick={() => handleClick("/")}
-            sx={{ my: 2, color: "white" }}
+          <Tooltip title="Bob Belcher">
+            <IconButton onClick={handleOpenMenu}>
+              <Avatar />
+            </IconButton>
+          </Tooltip>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleCloseMenu}
           >
-            Logout
-          </Button>
+            <MenuItem onClick={() => handleClick("/")}>Logout</MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
       <Toolbar />
