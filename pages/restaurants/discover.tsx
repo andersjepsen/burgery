@@ -24,7 +24,7 @@ const DiscoverPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Layout fullscreen>
+      <Layout maxWidth={false}>
         maps here
         <Paper
           sx={{

@@ -1,5 +1,6 @@
 import { useTheme } from "@emotion/react";
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -21,6 +22,7 @@ import React, { useRef } from "react";
 import { Layout } from "ui/Layout";
 import { Rating } from "ui/components/Rating";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 
 const MENUS = [...new Array(10)].map((_, index) => ({
   id: index,
@@ -64,38 +66,15 @@ const OPENING_HOURS = [
   },
 ];
 
-const IMAGES = [
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  },
-];
+const IMAGES = [...new Array(6)].map((_, index) => ({
+  id: index,
+  img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
+}));
 
 const RestaurantPage: NextPage = () => {
   const [page, setPage] = React.useState("about");
+
+  const [favorite, setfavorite] = React.useState(false);
 
   const [rating, setRating] = React.useState<{
     taste: number | null;
@@ -127,7 +106,19 @@ const RestaurantPage: NextPage = () => {
       <Layout>
         <Grid container>
           <Grid item xs>
-            <Typography variant="h3">Restaurant Name</Typography>
+            <Box sx={{ display: "flex" }}>
+              <Typography variant="h3">Restaurant Name</Typography>
+              <IconButton
+                sx={favorite ? { color: "red" } : undefined}
+                onClick={() => setfavorite(!favorite)}
+              >
+                {favorite ? (
+                  <Favorite fontSize="large" />
+                ) : (
+                  <FavoriteBorder fontSize="large" />
+                )}
+              </IconButton>
+            </Box>
             <Typography variant="h6">Some address 24</Typography>
           </Grid>
           <Grid item>
@@ -192,31 +183,38 @@ const RestaurantPage: NextPage = () => {
             </Grid>
             <Grid item xs={8}>
               <Card>
-                <Grid container item justifyContent="flex-end">
-                  <input
-                    ref={upload}
-                    type="file"
-                    hidden
-                    accept="image/png, image/jpeg"
-                  />
-                  <Tooltip title="Upload">
-                    <IconButton color="primary" onClick={handleUpload}>
-                      <FileUploadIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Grid>
-                <ImageList cols={3}>
-                  {IMAGES.map((item) => (
-                    <ImageListItem key={item.img}>
-                      <img
-                        src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                        srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                        alt=""
-                        loading="lazy"
+                <CardContent>
+                  <Grid container>
+                    <Grid item xs>
+                      <Typography variant="h5">Photos</Typography>
+                    </Grid>
+                    <Grid item>
+                      <input
+                        ref={upload}
+                        type="file"
+                        hidden
+                        accept="image/png, image/jpeg"
                       />
-                    </ImageListItem>
-                  ))}
-                </ImageList>
+                      <Tooltip title="Upload">
+                        <IconButton color="primary" onClick={handleUpload}>
+                          <FileUploadIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
+                  </Grid>
+                  <ImageList cols={3}>
+                    {IMAGES.map((item) => (
+                      <ImageListItem key={item.img}>
+                        <img
+                          src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+                          srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                          alt=""
+                          loading="lazy"
+                        />
+                      </ImageListItem>
+                    ))}
+                  </ImageList>
+                </CardContent>
               </Card>
             </Grid>
             <Grid item xs={4}>

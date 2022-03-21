@@ -2,7 +2,7 @@ import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Box, Button, Container, Grid } from "@mui/material";
+import { Box, Button, Container, ContainerTypeMap, Grid } from "@mui/material";
 import { useRouter } from "next/router";
 
 const pages = [
@@ -11,16 +11,13 @@ const pages = [
 ];
 
 interface LayoutProps {
-  fullscreen?: boolean;
+  maxWidth?: ContainerTypeMap["props"]["maxWidth"];
   children: React.ReactNode;
 }
-export function Layout({ children, fullscreen = false }: LayoutProps) {
+export function Layout({ children, maxWidth = "lg" }: LayoutProps) {
   const router = useRouter();
 
-  const maxWidth = React.useMemo(
-    () => (fullscreen === true ? false : undefined),
-    [fullscreen]
-  );
+  const fullscreen = React.useMemo(() => maxWidth === undefined, [maxWidth]);
 
   const handleClick = (link: string) => {
     router.push(link);
