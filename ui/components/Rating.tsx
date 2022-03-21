@@ -49,7 +49,7 @@ export function Rating({ value, onChange }: Props) {
       </Grid>
       <Grid container spacing={1} direction="row">
         <Grid item xs>
-          <Typography>Visual representation</Typography>
+          <Typography>Visual</Typography>
         </Grid>
         <Grid item>
           <MUIRating

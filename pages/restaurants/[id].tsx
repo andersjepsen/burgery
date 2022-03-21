@@ -81,9 +81,9 @@ const RestaurantPage: NextPage = () => {
     texture: number | null;
     visual: number | null;
   }>({
-    taste: 4,
-    texture: 5,
-    visual: 3,
+    taste: null,
+    texture: null,
+    visual: null,
   });
 
   const upload = React.useRef<HTMLInputElement>(null);
