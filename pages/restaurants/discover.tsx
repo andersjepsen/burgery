@@ -10,7 +10,11 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { NextPage } from "next/types";
+import {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next/types";
 import React from "react";
 import { Rating } from "ui/components/Rating";
 import { Layout } from "ui/Layout";
@@ -26,7 +30,15 @@ const RESTAURANTS = [...new Array(10)].map((_, index) => ({
   },
 }));
 
-const DiscoverPage: NextPage = () => {
+export const getServerSideProps: GetServerSideProps<{
+  restaurants: typeof RESTAURANTS;
+}> = async () => {
+  return { props: { restaurants: RESTAURANTS } };
+};
+
+const DiscoverPage: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ restaurants }) => {
   const router = useRouter();
 
   return (
@@ -49,7 +61,7 @@ const DiscoverPage: NextPage = () => {
             top: 70,
           }}
         >
-          {RESTAURANTS.map((restaurant) => (
+          {restaurants.map((restaurant) => (
             <Card sx={{ display: "flex", my: 2 }} key={restaurant.id}>
               <Link href={`/restaurants/${restaurant.id}`} passHref>
                 <CardContent sx={{ flexGrow: 1, cursor: "pointer" }}>

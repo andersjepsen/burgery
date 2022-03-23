@@ -17,7 +17,11 @@ import {
 } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { NextPage } from "next/types";
+import {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next/types";
 import React, { useRef } from "react";
 import { Layout } from "ui/Layout";
 import { Rating } from "ui/components/Rating";
@@ -71,7 +75,53 @@ const IMAGES = [...new Array(6)].map((_, index) => ({
   img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
 }));
 
-const RestaurantPage: NextPage = () => {
+export const getServerSideProps: GetServerSideProps<{
+  restaurant: {
+    openingHours: typeof OPENING_HOURS;
+    photos: typeof IMAGES;
+    menus: typeof MENUS;
+    description: string;
+    name: string;
+    address: string;
+    rating: {
+      taste: number;
+      texture: number;
+      visual: number;
+    };
+  };
+}> = async ({ query }) => {
+  const id = Array.isArray(query.id) ? query.id[0] : query.id;
+
+  if (!id) {
+    return { notFound: true };
+  }
+
+  const restaurant = {
+    name: "Restaurant name",
+    openingHours: OPENING_HOURS,
+    photos: IMAGES,
+    menus: MENUS,
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+    sit amet ante vitae eros vulputate accumsan. Morbi blandit,
+    elit et feugiat mollis, justo neque laoreet est, quis
+    elementum elit turpis vel mi. Maecenas vulputate quam tempus
+    nulla sagittis, eu facilisis augue mollis. Aliquam vel
+    fringilla ligula. Etiam ornare quis nisi et aliquet. Quisque
+    arcu erat, molestie consectetur arcu nec, auctor laoreet
+    orci. Integer mattis pulvinar neque, eget vehicula metus
+    venenatis a. Sed commodo quis erat eget bibendum. Vestibulum
+    tristique rutrum mi, ut fringilla lectus volutpat ac. Duis
+    sed dui auctor, volutpat diam ac, viverra massa. Fusce porta
+    lorem in cursus pulvinar.`,
+    address: "Some address 24",
+    rating: { taste: 5, texture: 3, visual: 4 },
+  };
+  return { props: { restaurant } };
+};
+
+const RestaurantPage: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ restaurant }) => {
   const [page, setPage] = React.useState("about");
 
   const [favorite, setfavorite] = React.useState(false);
@@ -99,7 +149,7 @@ const RestaurantPage: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Restaurant Name | Burgery</title>
+        <title>{restaurant.name} | Burgery</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -107,7 +157,7 @@ const RestaurantPage: NextPage = () => {
         <Grid container>
           <Grid item xs>
             <Box sx={{ display: "flex" }}>
-              <Typography variant="h3">Restaurant Name</Typography>
+              <Typography variant="h3">{restaurant.name}</Typography>
               <IconButton
                 sx={favorite ? { color: "red" } : undefined}
                 onClick={() => setfavorite(!favorite)}
@@ -119,10 +169,10 @@ const RestaurantPage: NextPage = () => {
                 )}
               </IconButton>
             </Box>
-            <Typography variant="h6">Some address 24</Typography>
+            <Typography variant="h6">{restaurant.address}</Typography>
           </Grid>
           <Grid item>
-            <Rating value={{ taste: 5, texture: 3, visual: 4 }} />
+            <Rating value={restaurant.rating} />
           </Grid>
         </Grid>
 
@@ -143,20 +193,7 @@ const RestaurantPage: NextPage = () => {
               <Card>
                 <CardContent>
                   <Typography variant="h5">About</Typography>
-                  <Typography>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    sit amet ante vitae eros vulputate accumsan. Morbi blandit,
-                    elit et feugiat mollis, justo neque laoreet est, quis
-                    elementum elit turpis vel mi. Maecenas vulputate quam tempus
-                    nulla sagittis, eu facilisis augue mollis. Aliquam vel
-                    fringilla ligula. Etiam ornare quis nisi et aliquet. Quisque
-                    arcu erat, molestie consectetur arcu nec, auctor laoreet
-                    orci. Integer mattis pulvinar neque, eget vehicula metus
-                    venenatis a. Sed commodo quis erat eget bibendum. Vestibulum
-                    tristique rutrum mi, ut fringilla lectus volutpat ac. Duis
-                    sed dui auctor, volutpat diam ac, viverra massa. Fusce porta
-                    lorem in cursus pulvinar.
-                  </Typography>
+                  <Typography>{restaurant.description}</Typography>
                 </CardContent>
               </Card>
             </Grid>
@@ -164,7 +201,7 @@ const RestaurantPage: NextPage = () => {
               <Card>
                 <CardContent>
                   <Typography variant="h5">Opening hours</Typography>
-                  {OPENING_HOURS.map((openingHour) => (
+                  {restaurant.openingHours.map((openingHour) => (
                     <Grid container spacing={2} key={openingHour.day}>
                       <Grid item xs>
                         <Typography>{openingHour.day}</Typography>
@@ -203,7 +240,7 @@ const RestaurantPage: NextPage = () => {
                     </Grid>
                   </Grid>
                   <ImageList cols={3}>
-                    {IMAGES.map((item) => (
+                    {restaurant.photos.map((item) => (
                       <ImageListItem key={item.img}>
                         <img
                           src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
@@ -232,7 +269,7 @@ const RestaurantPage: NextPage = () => {
           <Card>
             <CardContent>
               <Grid container spacing={2} direction="column">
-                {MENUS.map((menu) => (
+                {restaurant.menus.map((menu) => (
                   <Grid item xs key={menu.id}>
                     <Grid
                       container
